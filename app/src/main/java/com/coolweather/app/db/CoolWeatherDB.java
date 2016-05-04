@@ -14,6 +14,7 @@ import java.util.List;
 
 /**
  * Created by Administrator on 2016-05-03.
+ * 操作数据库的工具类,从数据库加载省份等信息,或者向数据库保存省份等信息
  */
 public class CoolWeatherDB {
 
