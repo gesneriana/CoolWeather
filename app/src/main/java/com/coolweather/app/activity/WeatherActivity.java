@@ -1,12 +1,14 @@
 package com.coolweather.app.activity;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -18,7 +20,7 @@ import com.coolweather.app.util.Utility;
 /**
  * Created by Administrator on 2016-05-06.
  */
-public class WeatherActivity extends Activity {
+public class WeatherActivity extends Activity implements View.OnClickListener{
 
     /**
      * 用于显示天气信息的布局
@@ -55,6 +57,16 @@ public class WeatherActivity extends Activity {
      */
     private TextView currentDateText;
 
+    /**
+     * 切换城市按钮
+     */
+    private Button switchCity;
+
+    /**
+     * 更新天气按钮
+     */
+    private Button refreshWeather;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -69,6 +81,10 @@ public class WeatherActivity extends Activity {
         temp1Text=(TextView)findViewById(R.id.temp1);
         temp2Text=(TextView)findViewById(R.id.temp2);
         currentDateText=(TextView)findViewById(R.id.current_date);
+        switchCity=(Button)findViewById(R.id.switch_city);
+        refreshWeather=(Button)findViewById(R.id.refresh_weather);
+        switchCity.setOnClickListener(this);
+        refreshWeather.setOnClickListener(this);
         // 获取县级代号
         String countyCode=getIntent().getStringExtra("county_code");
         if(!TextUtils.isEmpty(countyCode)){
@@ -80,6 +96,33 @@ public class WeatherActivity extends Activity {
         }else {
             // 没有县级代号时,就直接显示本地天气
             showWeather();
+        }
+    }
+
+    /**
+     * 按钮的点击事件
+     * @param v
+     */
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()){
+            case R.id.switch_city:
+                Intent intent=new Intent(this,ChooseAreaActivity.class);
+                intent.putExtra("from_weather_activity",true);
+                startActivity(intent);
+                finish();
+                break;
+            case R.id.refresh_weather:
+                publishText.setText("同步中...");
+                SharedPreferences prefs=PreferenceManager.getDefaultSharedPreferences(this);
+                // 从xml文件获取上次查询的天气代码
+                String weatherCode=prefs.getString("weather_code","");
+                if(!TextUtils.isEmpty(weatherCode)){
+                    queryWeatherInfo(weatherCode);
+                }
+                break;
+            default:
+                break;
         }
     }
 
