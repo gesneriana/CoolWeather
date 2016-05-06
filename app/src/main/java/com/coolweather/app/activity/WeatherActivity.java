@@ -13,6 +13,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.coolweather.app.R;
+import com.coolweather.app.service.AutoUpdateService;
 import com.coolweather.app.util.HttpCallbackListener;
 import com.coolweather.app.util.HttpUtil;
 import com.coolweather.app.util.Utility;
@@ -92,11 +93,15 @@ public class WeatherActivity extends Activity implements View.OnClickListener{
             publishText.setText("同步中...");
             weatherInfoLayout.setVisibility(View.INVISIBLE);
             cityNameText.setVisibility(View.INVISIBLE);
-            queryWeatherCode(countyCode);
+            queryWeatherCode(countyCode);       // 从服务器同步天气数据
         }else {
             // 没有县级代号时,就直接显示本地天气
             showWeather();
         }
+
+        // 启动自动更新天气的服务
+        Intent intent=new Intent(this, AutoUpdateService.class);
+        startService(intent);   // 会再次同步一次天气数据
     }
 
     /**
@@ -189,6 +194,7 @@ public class WeatherActivity extends Activity implements View.OnClickListener{
 
     /**
      * 从SharedPreferences文件中读取存储的天气信息,并显示到界面上
+     * 并且启动了自动更新天气的服务
      */
     private void showWeather(){
         SharedPreferences prefs= PreferenceManager.getDefaultSharedPreferences(this);

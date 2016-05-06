@@ -115,7 +115,7 @@ public class Utility {
     }
 
     /**
-     * 解析服务器返回的JSON格式区县天气信息数据,并将解析的数据保存到本地
+     * 解析服务器返回的JSON格式区县天气信息数据,并将解析的数据保存到本地 SharedPreferences文件中
      * @param context
      * @param response
      */
